@@ -71,3 +71,43 @@ const products = [
     const adj = customerAdjustmentRate(customerType);
     return sub * (1 - adj);
   }
+
+  // 8) formatCurrency(amount)
+  function formatCurrency(amount) {
+    return "$" + Number(amount).toFixed(2);
+  }
+
+  // 9) printReceipt(cart, customerType)
+  function printReceipt(cart, customerType) {
+    console.clear();
+    console.log("=== Esports Arena - Match Night Receipt ===");
+  
+    // Items
+    cart.forEach(item => {
+      const product = findProductById(item.productId);
+      const qty = Number(item.qty);
+      const unitDisc = product ? priceAfterCategoryDiscount(product) : 0;
+      const lineTotal = lineItemTotal(item);
+  
+      const name = product ? product.name : `[Missing product #${item.productId}]`;
+      const qtyLabel = Number.isFinite(qty) ? qty : 0;
+  
+      console.log(
+        `${name} | qty: ${qtyLabel} | unit (disc): ${formatCurrency(unitDisc)} | line: ${formatCurrency(lineTotal)}`
+      );
+    });
+
+    // Totals
+    const sub = orderSubtotal(cart);
+  const rate = customerAdjustmentRate(customerType);
+  const final = orderTotal(cart, customerType);
+  const saved = sub - final;
+
+  const percentLabel = `${Math.round(rate * 100)}%`;
+
+  console.log("-------------------------------------------");
+  console.log(`Subtotal: ${formatCurrency(sub)}`);
+  console.log(`Customer Adjustment (${percentLabel}): -${formatCurrency(saved)}`);
+  console.log(`Final Total: ${formatCurrency(final)}`);
+  console.log("===========================================");
+}
